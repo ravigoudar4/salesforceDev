@@ -1,0 +1,15 @@
+<aura:component >
+    <aura:attribute name="isClicked" type="Boolean"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInIt}"/>
+	
+    <div>
+        <div class="slds-truncate" title="Edit" onclick="{!c.editRec}">
+            <lightning:icon alternativetext="Approved"  
+                            iconName="utility:edit"   size="x-small"/>  
+        </div>
+        <div class="slds-truncate" title="Delete" onclick="{!c.deleteRec}">
+            <lightning:icon alternativetext="Approved"  
+                            iconName="utility:delete"  size="x-small" />  
+        </div>
+    </div>
+</aura:component>

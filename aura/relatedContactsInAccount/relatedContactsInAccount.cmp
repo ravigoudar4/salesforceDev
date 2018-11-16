@@ -1,0 +1,196 @@
+<aura:component controller="relatedContactsInAccount" implements="flexipage:availableForAllpagetypes,force:hasRecordId" access="global" >
+    <aura:attribute name="contacts" type="Object"/>
+    <aura:attribute name="Fields" type="List"/>
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="intervalId" type="Integer" default="0"/>
+    <!--declare attributes--> 
+    <aura:attribute name="lstSelectedRecords" type="sObject[]" default="[]" description="Use,for store SELECTED sObject Records"/>
+    <aura:attribute name="listOfSearchRecords" type="List" description="Use,for store the list of search records which returns from apex class"/>
+    <aura:attribute name="SearchKeyWord" type="string"/>
+    <aura:attribute name="objectAPIName" type="string" default="contact"/>
+    <aura:attribute name="IconName" type="string" default="standard:contact"/>
+    <aura:attribute name="label" type="string" default="Contact Name"/>
+    <aura:attribute name="email" type="string[]"/>
+    <aura:attribute name="subject" type="string"/>
+    <aura:attribute name="body" type="string"/>
+    <aura:attribute name="mailStatus" type="boolean" default="false"/>
+    <aura:attribute name="selectedContact" type="Contact"/>
+    <aura:attribute name="selectedConNames" type="String"/>
+    
+    <!--declare events hendlers-->  
+    <aura:handler name="oSelectedRecordEvent" event="c:selectedsObjectRecordsEvent" action="{!c.handleComponentEvent}"/>
+    <aura:attribute name="Message" type="String" default=""/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInIt}"/>
+    
+    <div>
+        <p style="position:relative;" id="tofloat">
+            <b><span style="color:red">Send Email to Related Contacts</span></b>
+        </p>
+    </div>
+
+
+    <article class="slds-card">
+        <div class="slds-card__body slds-card__body_inner" style="height:500px;">
+            <!--<lightning:datatable keyField="id"
+                                  data="{!v.contacts}"
+                                  columns="{!v.Fields}"
+                                  onrowaction="{!c.createActivity}"/>-->
+            <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                <thead>
+                    <tr class="slds-text-title_caps">
+                        <th scope="col">
+                            <div class="slds-truncate" title="Contact Name">Contact Name</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Account Name">Id</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Close Date"></div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Stage"></div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Confidence"></div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Amount"></div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Contact"></div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <aura:iteration items="{!v.contacts}" var="objContact">
+                        <tr onclick="{!c.openEmailComponent}" data-record="{!objContact.Name}" data-label="{!objContact.Email}">
+                            <!--<a href="" onclick="{!c.createActivity}" data-attriVal="{!objContact.Id}">-->
+                            <th scope="row" data-label="Opportunity Name">
+                                <div class="slds-truncate" title="Cloudhub"><a href="">{!objContact.Name}</a></div>
+                            </th>
+                            <td data-label="Account Name" >
+                                <div class="slds-truncate" title="Cloudhub">{!objContact.Id}</div>
+                            </td>
+                            <td data-label="Close Date">
+                                <div class="slds-truncate" title="4/14/2015"></div>
+                            </td>
+                            <td data-label="Prospecting">
+                                <div class="slds-truncate" title="Prospecting"></div>
+                            </td>
+                            <td data-label="Confidence">
+                                <div class="slds-truncate" title="20%"></div>
+                            </td>
+                            <td data-label="Amount">
+                                <div class="slds-truncate" title="$25k"></div>
+                            </td>
+                            <td data-label="Contact">
+                                <div class="slds-truncate" title="jrogers@cloudhub.com"><a href="javascript:void(0);"></a></div>
+                            </td>
+                            <!--</a>-->
+                        </tr>
+                    </aura:iteration>
+                </tbody>
+            </table>
+        </div>
+        
+        <div style="height: 500px; min-width: 615px; overflow-x: auto;" aura:id="dockedComposer" class="slds-hide">
+            <div class="slds-docked_container">
+                <section class="slds-docked-composer slds-grid slds-grid_vertical slds-is-open" role="dialog" aria-labelledby="dialog-heading-id-1" aria-describedby="dialog-content-id-1">
+                    <header class="slds-docked-composer__header slds-grid slds-shrink-none" aria-live="assertive">
+                        <div class="slds-media slds-media_center slds-no-space">
+                            <div class="slds-media__figure slds-m-right_x-small">
+                                <span class="slds-icon_container">
+                                    <lightning:icon iconName="utility:email" size="small"/>
+                                </span>
+                            </div>
+                            <div class="slds-media__body">
+                                <h2 class="slds-truncate" id="dialog-heading-id-1" title="Header">Send Email</h2>
+                            </div>
+                        </div>
+                        <div class="slds-col_bump-left slds-shrink-none">
+                            <button class="slds-button slds-button_icon slds-button_icon" title="Close" onclick="{!c.closeEmailComponent}">
+                                <lightning:icon iconName="utility:close" size="small" alternativeText="sss"/>
+                                <span class="slds-assistive-text">Close</span>
+                            </button>
+                        </div>
+                    </header>
+                    <div class="slds-docked-composer__body" id="dialog-content-id-1">
+                        <div class="slds-align_absolute-center"><div class="slds-m-around--medium">
+                                <div class="slds-container--medium">
+                                    <div class="slds-form--stacked">
+                                        <div class="slds-form-element">
+                                            
+											<div onmouseleave="{!c.onblur}" aura:id="searchRes" class="slds-form-element slds-lookup slds-is-close">
+	                                            <label class="slds-form-element__label">{!v.label}</label>
+	                                            <!--This part is for display search bar for lookup-->  
+	                                            <div class="slds-form-element__control">
+	                                                <div class="slds-input-has-icon slds-input-has-icon--right">
+	                                                    <!-- This markup is for when an record is selected -->
+	                                                    <div aura:id="lookup-pill" class="slds-pill-container">
+	                                                        <div aura:id="lookupField" class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right"  style="width: 100%;">
+	                                                            
+	                                                            <ui:inputText click="{!c.onfocus}"
+	                                                                          updateOn="keyup"
+	                                                                          keyup="{!c.keyPressController}"
+	                                                                          class="slds-lookup__search-input slds-input inputSize"
+	                                                                          value="{!v.SearchKeyWord}"
+	                                                                          placeholder="search.."/>
+	                                                            
+	                                                            <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_right">
+	                                                                <lightning:icon iconName="utility:search" size="x-small" alternativeText="icon"/>
+	                                                            </span>
+	                                                        </div> 
+	                                                        <!--Selected Records Pills Section-->
+	                                                        <aura:iteration items="{!v.lstSelectedRecords}" var="sr">
+	                                                            <lightning:pill class="slds-m-around_xx-small" label="{!sr.Name}" name="{!sr}" onremove="{! c.clear }">
+	                                                                <aura:set attribute="media">
+	                                                                    <lightning:icon iconName="{!v.IconName}" size="x-small" alternativeText="icon"/>
+	                                                                </aura:set>
+	                                                            </lightning:pill>
+	                                                        </aura:iteration>
+	                                                    </div>
+	                                                </div>
+                                            </div>
+                                            
+                                            <!--This part is for Display typehead lookup result List-->  
+                                            <ul style="min-height:40px;margin-top:0px !important" class="slds-listbox slds-listbox_vertical slds-dropdown slds-dropdown_fluid slds-lookup__menu slds" role="listbox">
+                                                <lightning:spinner class="slds-hide" variant="brand" size="small" aura:id="mySpinner"/>
+                                                <center> {!v.Message}</center>
+                                                <aura:iteration items="{!v.listOfSearchRecords}" var="singleRec">
+                                                    <!--Child Component--> 
+                                                    <c:reUsableMultiSelectLookupResult oRecord="{!singleRec}" IconName="{!v.IconName}"/>
+                                                </aura:iteration>
+                                            </ul>
+                                        </div>
+
+										</div>
+                                        <div class="slds-form-element">
+                                            <label class="slds-form-element__label" for="CC">Subject</label>
+                                            <div class="slds-form-element__control">
+                                                <ui:inputText class="slds-input" aura:id="subject"  value="{!v.subject}" placeholder="Subject"/>
+                                            </div>
+                                        </div>
+                                        <div class="slds-form-element">
+                                            <label class="slds-form-element__label" for="textareaSample2">Mail Body</label>
+                                            <div class="slds-form-element__control">
+                                                <lightning:inputRichText aura:id="body" value="{!v.body}" />
+                                            </div>
+                                        </div>
+                                        <div class="slds-form-element">    
+                                            <button class="slds-button slds-button--brand" onclick="{!c.sendMail}">Send</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div></div>
+                    </div>
+                    
+                </section>
+            </div>
+        </div>
+        
+        <footer class="slds-card__footer">
+            
+        </footer>
+    </article>
+</aura:component>

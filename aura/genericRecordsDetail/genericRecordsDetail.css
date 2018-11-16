@@ -1,0 +1,19 @@
+.THIS .header {
+    margin-top: 0px;
+    padding: 1em 1em 1em 0;
+    display: flex;
+    background: #FFF;
+    justify-content: space-between;
+}
+
+.THIS .header_label>p {
+    padding: 0.3em 0 0 1em;
+    color: #000;
+    font-size: 2em;
+}
+
+.THIS .header_record {
+    text-align: right;
+    padding: 1em 1em 1em 0;
+    background: #FFF;
+}

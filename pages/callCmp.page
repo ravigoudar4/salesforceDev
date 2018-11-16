@@ -1,0 +1,46 @@
+<apex:page controller="callCmpController">
+    <button value="Validate" onclick="callComponent();"/>
+    
+    	<apex:includeLightning />
+    	<div id="LcDisplayId" style="display:none;"></div> 
+   <script>
+    // Here 'VfApp' Is Lightning Application Name
+    function callComponent(){
+        var boolValue = '{!isCallCmp}';
+        console.log('boolValue---->',boolValue);
+        $Lightning.use("c:app_ToCall", function() {
+            /* 'LcForVf' is Lightning Component Name which we are Displaying In Vf Page 
+           * syntax for create lightning component dynamically :
+           * $Lightning.createComponent(String type, Object attributes, String locator, function callback) */
+            $Lightning.createComponent("c:Cmp_ToCall",
+                                       { 
+                                           // Set Lightning Component Attributes Property before creating Lightning Component In Visualforce page 
+                                           textColor : "Red",
+                                           isClicked : boolValue,
+                                           currentUserName : '{!$User.FirstName} {!$User.LastName}' 
+                                       },
+                                       "LcDisplayId",
+                                       function(component) {
+                                           // create component Callback, Lightning Component has been Created,
+                                           // Now you can set more lightning Component attributes here,
+                                           // and do more cool stuff here
+                                           //component.set("v.accId" , '{!$CurrentPage.parameters.recId}');
+                                           //component.set("v.isClicked",boolValue);
+                                       });
+        });
+     }
+    window.onload = function(){
+        this.callComponent();
+    }
+    
+    function callComponent(){
+    	   document.getElementById('LcDisplayId').style.display='Block';
+    }
+    
+    function callAfterAction(){
+        var boolValue1 = '{!isCallCmp}';
+    	console.log('boolvalue----222---->',boolValue1);
+        
+    }
+    </script>
+</apex:page>

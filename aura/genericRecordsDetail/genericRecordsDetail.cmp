@@ -1,0 +1,72 @@
+<aura:component controller="genericRecordsDetailController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId">
+	<!--design attributes-->
+	<aura:attribute name ="object" type="String" default="Contact"/>
+    <aura:attribute name ="fieldSetName" type="String" default="contact_field"/>
+    <aura:attribute name ="prev" type="Integer"/>
+
+    <!--header data attributes-->
+    <aura:attribute name="headerData" type="List"/>
+
+    <!--row data attributes-->
+    <aura:attribute name="rowData" type="List"/>
+    <aura:attribute name="fieldPath" type="List"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInIt}"/>
+
+    <div>
+    	<div class="header">
+    		<div class="header_label">
+                <p>{!v.object} Records</p>
+            </div>
+            <div class="header_record">
+                <button type="button" onclick="{!c.newRecord}" class="slds-button slds-button_brand">New Record</button>
+            </div>
+    	</div>
+    	<div>
+		    <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+		  		<thead>
+		    		<tr class="slds-line-height_reset">
+		    			<th aria-label="Actions" aria-sort="none" class="slds-is-sortable slds-is-resizable slds-text-title_caps" scope="col" style="width:6%">
+                            <a class="slds-th__action slds-text-link_reset" href="javascript:void(0);" role="button" tabindex="-1">
+                                <span> Actions </span>
+                            </a>
+                        </th>
+                        <aura:iteration items="{!v.headerData}" var="header">
+                        	<c:genericRecordsHeader headerLabel="{!header.label}"/>
+                        </aura:iteration>
+		    		</tr>
+				</thead>
+				<tbody>
+					<aura:iteration items="{!v.rowData}" var="obj"> 
+						<tr class="slds-hint-parent">
+							<td role="gridcell">
+		                        <div style="display: flex; justify-content: space-around;">
+		                            <div class="slds-truncate" title="Edit" id = "{!obj.Id}" onclick="{!c.editRec}">
+		                                <lightning:icon alternativetext="Approved"  
+		                                                iconName="utility:edit"   size="x-small"/>  
+		                            </div>
+		                            <div class="slds-truncate" title="Delete" id = "{!obj.Id}" onclick="{!c.deleteRec}">
+		                                <lightning:icon alternativetext="Approved"  
+		                                                iconName="utility:delete"  size="x-small" />  
+		                            </div>
+		                        </div>
+	                    	</td>
+							<aura:iteration items="{!v.fieldPath}" var="objAPI"> 
+                                <td role="gridcell">
+                                    <div class="slds-truncate" title="Acme">
+                                    	<c:genericRecordsRows rowRecord='{!obj}'
+                                                          rowAPI='{!objAPI}'/>
+                                        
+                                    </div>
+                                </td>
+                            </aura:iteration>
+						</tr>
+					</aura:iteration>
+				</tbody>
+			</table>
+		</div>
+		<div>
+
+		</div>
+	</div>
+</aura:component>

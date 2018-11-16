@@ -1,0 +1,10 @@
+<aura:component>
+	<aura:attribute name="headerLabel" type="String"/>
+	<th class="slds-text-title_caps" scope="col">
+		<a class="slds-th__action slds-text-link_reset" href="javascript:void(0);" role="button" tabindex="-1">
+			<span class="width_100" title="{!v.colName}" id="{!v.col_fieldPath}" onclick="{!c.sort}">
+				{!v.headerLabel}
+			</span>
+		</a>
+	</th>
+</aura:component>
